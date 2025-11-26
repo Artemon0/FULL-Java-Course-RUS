@@ -171,41 +171,35 @@
                 <p class="section-subtitle">Всё что нужно для изучения Java в одном месте</p>
             </div>
             <div class="features-grid">
-                <div class="feature-card" data-aos="fade-up">
+                <div class="feature-card" onclick="scrollToSection('modules')">
                     <div class="feature-icon">📚</div>
                     <h3>Структурированный подход</h3>
                     <p>Чёткая последовательность от простого к сложному. Beginner → Intermediate → Advanced.</p>
-                    <div class="feature-link">Узнать больше →</div>
                 </div>
-                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="feature-card" onclick="scrollToSection('modules')">
                     <div class="feature-icon">💻</div>
                     <h3>Практика, практика, практика</h3>
                     <p>179+ заданий и 40+ проектов. Учитесь на реальных примерах, а не только теории.</p>
-                    <div class="feature-link">Посмотреть задания →</div>
                 </div>
-                <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="feature-card" onclick="scrollToSection('minecraft')">
                     <div class="feature-icon">🎮</div>
                     <h3>Финальный проект - Minecraft</h3>
                     <p>Создайте 3D игру с OpenGL. Применение всех знаний на практике.</p>
-                    <div class="feature-link">Смотреть проект →</div>
                 </div>
-                <div class="feature-card" data-aos="fade-up">
+                <div class="feature-card" onclick="window.open('https://github.com/artemon0/FULL-Java-Course-RUS/blob/main/LICENSE')">
                     <div class="feature-icon">🆓</div>
                     <h3>Полностью бесплатно</h3>
                     <p>Open Source курс с MIT лицензией. Доступен всем и навсегда.</p>
-                    <div class="feature-link">Лицензия →</div>
                 </div>
-                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="feature-card" onclick="window.open('https://github.com/artemon0/FULL-Java-Course-RUS')">
                     <div class="feature-icon">🇷🇺</div>
                     <h3>На русском языке</h3>
                     <p>Вся документация, примеры и комментарии на русском языке.</p>
-                    <div class="feature-link">Начать →</div>
                 </div>
-                <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="feature-card" onclick="window.open('https://github.com/artemon0/FULL-Java-Course-RUS#readme')">
                     <div class="feature-icon">🚀</div>
                     <h3>Современный стек</h3>
                     <p>Java 18+, Spring Boot 3, LWJGL 3, Maven. Актуальные технологии 2024.</p>
-                    <div class="feature-link">Технологии →</div>
                 </div>
             </div>
         </div>
@@ -224,8 +218,8 @@
                     <div class="option-icon">💻</div>
                     <h3>Онлайн компилятор</h3>
                     <p>Пишите и запускайте код прямо в браузере. Не нужно ничего устанавливать!</p>
-                    <button class="btn btn-primary" onclick="openOnlineCompiler()">
-                        Открыть компилятор →
+                    <button class="btn btn-primary" onclick="window.open('https://www.jdoodle.com/online-java-compiler', '_blank')">
+                        Открыть JDoodle →
                     </button>
                     <div class="option-features">
                         <span>✓ Java 18+</span>
@@ -249,85 +243,21 @@
                 <div class="option-card">
                     <div class="option-icon">📝</div>
                     <h3>Просмотр кода</h3>
-                    <p>Изучайте примеры кода прямо в браузере с подсветкой синтаксиса.</p>
-                    <button class="btn btn-primary" onclick="openCodeViewer()">
-                        Открыть код →
+                    <p>Изучайте примеры кода прямо на GitHub с подсветкой синтаксиса.</p>
+                    <button class="btn btn-primary" onclick="window.open('https://github.com/artemon0/FULL-Java-Course-RUS/tree/main/beginner', '_blank')">
+                        Открыть на GitHub →
                     </button>
                     <div class="option-features">
                         <span>✓ Все примеры</span>
                         <span>✓ Подсветка</span>
-                        <span>✓ Копирование</span>
+                        <span>✓ История изменений</span>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Online Compiler Modal -->
-    <div id="compilerModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>☕ Онлайн Java Компилятор</h3>
-                <button class="modal-close" onclick="closeCompiler()">&times;</button>
-            </div>
-            <div class="compiler-container">
-                <div class="compiler-editor">
-                    <div class="editor-toolbar">
-                        <button class="btn btn-small btn-primary" onclick="runCode()">▶️ Запустить</button>
-                        <button class="btn btn-small btn-secondary" onclick="clearCode()">🗑️ Очистить</button>
-                        <button class="btn btn-small btn-secondary" onclick="loadExample()">📝 Пример</button>
-                        <button class="btn btn-small btn-secondary" onclick="openExternalCompiler()" title="Открыть в JDoodle">🌐 Внешний</button>
-                    </div>
-                    <textarea id="codeEditor" class="code-textarea" spellcheck="false">public class Main {
-    public static void main(String[] args) {
-        System.out.println("Привет, Java!");
-        System.out.println("Напишите свой код здесь...");
-    }
-}</textarea>
-                </div>
-                <div class="compiler-output">
-                    <div class="output-toolbar">
-                        <span>Вывод программы:</span>
-                    </div>
-                    <div id="compilerOutput" class="output-area">
-                        Нажмите "Запустить" чтобы выполнить код...
-                    </div>
-                </div>
-            </div>
-            <div class="compiler-info">
-                <p>💡 Используется Piston API (Java 15+). Бесплатный онлайн компилятор без ограничений.</p>
-                <p style="font-size: 0.85rem; margin-top: 0.5rem;">Если компилятор не работает, используйте <a href="https://www.jdoodle.com/online-java-compiler" target="_blank" style="color: var(--primary);">JDoodle</a> или <a href="https://www.programiz.com/java-programming/online-compiler/" target="_blank" style="color: var(--primary);">Programiz</a></p>
-            </div>
-        </div>
-    </div>
 
-    <!-- Code Viewer Modal -->
-    <div id="codeViewerModal" class="code-viewer-modal">
-        <div class="code-viewer-content">
-            <div class="code-viewer-header">
-                <h3>📚 Просмотр кода курса</h3>
-                <div class="code-viewer-actions">
-                    <button class="btn btn-small btn-primary" onclick="copyCurrentCode()">📋 Копировать</button>
-                    <button class="btn btn-small btn-secondary" onclick="runCurrentCode()">▶️ Запустить</button>
-                    <button class="modal-close" onclick="closeCodeViewer()">&times;</button>
-                </div>
-            </div>
-            <div class="code-viewer-body">
-                <div class="code-files-list" id="codeFilesList">
-                    <div class="loading">Загрузка файлов...</div>
-                </div>
-                <div class="code-display-area">
-                    <div class="code-toolbar">
-                        <span class="code-filename" id="currentFileName">Выберите файл</span>
-                        <span id="codeLanguage" style="color: var(--gray-light); font-size: 0.85rem;">Java</span>
-                    </div>
-                    <div class="code-content-wrapper">
-                        <pre class="code-content" id="codeContent">Выберите файл из списка слева...</pre>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Modules Section -->
     <section id="modules" class="modules">

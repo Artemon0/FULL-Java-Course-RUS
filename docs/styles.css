@@ -601,13 +601,7 @@ body {
     margin-bottom: 1rem;
 }
 
-.feature-link {
-    color: var(--primary);
-    font-weight: 600;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-}
+
 
 /* ===== MODULES SECTION ===== */
 .modules {
