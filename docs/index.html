@@ -276,6 +276,7 @@
                         <button class="btn btn-small btn-primary" onclick="runCode()">▶️ Запустить</button>
                         <button class="btn btn-small btn-secondary" onclick="clearCode()">🗑️ Очистить</button>
                         <button class="btn btn-small btn-secondary" onclick="loadExample()">📝 Пример</button>
+                        <button class="btn btn-small btn-secondary" onclick="openExternalCompiler()" title="Открыть в JDoodle">🌐 Внешний</button>
                     </div>
                     <textarea id="codeEditor" class="code-textarea" spellcheck="false">public class Main {
     public static void main(String[] args) {
@@ -294,7 +295,8 @@
                 </div>
             </div>
             <div class="compiler-info">
-                <p>💡 Используется JDoodle API (Java 18+). Бесплатно: 200 запусков в день.</p>
+                <p>💡 Используется Piston API (Java 15+). Бесплатный онлайн компилятор без ограничений.</p>
+                <p style="font-size: 0.85rem; margin-top: 0.5rem;">Если компилятор не работает, используйте <a href="https://www.jdoodle.com/online-java-compiler" target="_blank" style="color: var(--primary);">JDoodle</a> или <a href="https://www.programiz.com/java-programming/online-compiler/" target="_blank" style="color: var(--primary);">Programiz</a></p>
             </div>
         </div>
     </div>

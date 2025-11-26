@@ -411,11 +411,51 @@ function loadExample() {
             System.out.println("Число: " + i);
         }
     }
+}`,
+        `public class Main {
+    public static void main(String[] args) {
+        // Пример: Массив
+        int[] numbers = {1, 2, 3, 4, 5};
+        for (int num : numbers) {
+            System.out.println("Элемент: " + num);
+        }
+    }
+}`,
+        `public class Main {
+    public static void main(String[] args) {
+        // Пример: Условия
+        int score = 85;
+        if (score >= 90) {
+            System.out.println("Отлично!");
+        } else if (score >= 70) {
+            System.out.println("Хорошо!");
+        } else {
+            System.out.println("Нужно подучить");
+        }
+    }
 }`
     ];
 
     const randomExample = examples[Math.floor(Math.random() * examples.length)];
     document.getElementById('codeEditor').value = randomExample;
+}
+
+function openExternalCompiler() {
+    const code = document.getElementById('codeEditor').value;
+
+    // Копируем код в буфер обмена
+    navigator.clipboard.writeText(code).then(() => {
+        showNotification('✅ Код скопирован! Открываем JDoodle...');
+
+        // Открываем JDoodle в новой вкладке
+        setTimeout(() => {
+            window.open('https://www.jdoodle.com/online-java-compiler', '_blank');
+        }, 500);
+    }).catch(() => {
+        // Если не удалось скопировать, просто открываем компилятор
+        window.open('https://www.jdoodle.com/online-java-compiler', '_blank');
+        showNotification('💡 Вставьте код вручную в JDoodle');
+    });
 }
 
 async function runCode() {
@@ -425,32 +465,106 @@ async function runCode() {
     output.textContent = '⏳ Компиляция и запуск...';
 
     try {
-        // Используем JDoodle API
-        const response = await fetch('https://api.jdoodle.com/v1/execute', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                clientId: '8c8042f6e1f2e0e5e5f5f5f5f5f5f5f5', // Публичный demo ID
-                clientSecret: 'demo-secret-key', // Demo secret
-                script: code,
-                language: 'java',
-                versionIndex: '4' // Java 18
-            })
-        });
+        // Пробуем несколько API по очереди
+        let result = null;
 
-        const result = await response.json();
+        // 1. Пробуем Piston API (бесплатный, без ключей)
+        try {
+            const pistonResponse = await fetch('https://emkc.org/api/v2/piston/execute', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    language: 'java',
+                    version: '15.0.2',
+                    files: [{
+                        name: 'Main.java',
+                        content: code
+                    }]
+                })
+            });
 
-        if (result.output) {
-            output.textContent = result.output;
-        } else if (result.error) {
-            output.textContent = '❌ Ошибка:\n' + result.error;
-        } else {
-            output.textContent = '❌ Не удалось выполнить код. Попробуйте позже.';
+            if (pistonResponse.ok) {
+                result = await pistonResponse.json();
+
+                if (result.run) {
+                    let outputText = '';
+                    if (result.run.stdout) outputText += result.run.stdout;
+                    if (result.run.stderr) outputText += '\n❌ Ошибки:\n' + result.run.stderr;
+                    if (result.compile && result.compile.stderr) outputText += '\n❌ Ошибки компиляции:\n' + result.compile.stderr;
+
+                    output.textContent = outputText || '✅ Программа выполнена успешно (без вывода)';
+                    return;
+                }
+            }
+        } catch (e) {
+            console.log('Piston API failed:', e);
         }
+
+        // 2. Пробуем OneCompiler API
+        try {
+            const oneCompilerResponse = await fetch('https://onecompiler.com/api/code/exec', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    language: 'java',
+                    stdin: '',
+                    files: [{
+                        name: 'Main.java',
+                        content: code
+                    }]
+                })
+            });
+
+            if (oneCompilerResponse.ok) {
+                result = await oneCompilerResponse.json();
+                if (result.stdout || result.stderr) {
+                    output.textContent = result.stdout || result.stderr;
+                    return;
+                }
+            }
+        } catch (e) {
+            console.log('OneCompiler API failed:', e);
+        }
+
+        // 3. Если все API не работают - показываем инструкцию
+        output.innerHTML = `❌ Онлайн компиляторы временно недоступны
+
+<span style="color: #10b981;">✅ Альтернативные способы запуска:</span>
+
+<span style="color: #6366f1;">1. Используйте онлайн IDE:</span>
+   • <a href="https://www.jdoodle.com/online-java-compiler" target="_blank" style="color: #8b5cf6;">JDoodle</a>
+   • <a href="https://www.programiz.com/java-programming/online-compiler/" target="_blank" style="color: #8b5cf6;">Programiz</a>
+   • <a href="https://www.onlinegdb.com/online_java_compiler" target="_blank" style="color: #8b5cf6;">OnlineGDB</a>
+
+<span style="color: #6366f1;">2. Установите Java локально:</span>
+   • Скачайте JDK 18+
+   • Установите IntelliJ IDEA
+   • Скачайте курс с GitHub
+
+<span style="color: #6366f1;">3. Используйте GitHub Codespaces:</span>
+   • Откройте репозиторий на GitHub
+   • Нажмите "Code" → "Codespaces"
+   • Запускайте код в облаке бесплатно!
+
+<span style="color: #f59e0b;">💡 Совет:</span> Для серьезного обучения рекомендуем 
+установить IntelliJ IDEA Community (бесплатно)`;
+
     } catch (error) {
-        output.textContent = '❌ Ошибка подключения к компилятору.\n\nПопробуйте:\n1. Проверьте интернет соединение\n2. Используйте локальную IDE (IntelliJ IDEA)\n3. Скачайте курс и запускайте код локально';
+        output.innerHTML = `❌ Ошибка подключения к компилятору
+
+<span style="color: #10b981;">✅ Что делать:</span>
+
+1. Проверьте интернет соединение
+2. Попробуйте обновить страницу (F5)
+3. Используйте внешние онлайн компиляторы:
+   • <a href="https://www.jdoodle.com/online-java-compiler" target="_blank" style="color: #8b5cf6;">JDoodle</a>
+   • <a href="https://www.programiz.com/java-programming/online-compiler/" target="_blank" style="color: #8b5cf6;">Programiz</a>
+
+4. Или установите Java локально для лучшего опыта`;
     }
 }
 
