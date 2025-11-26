@@ -458,6 +458,7 @@ async function runCode() {
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
         closeCompiler();
+        closeCodeViewer();
     }
 });
 
@@ -465,6 +466,12 @@ document.addEventListener('keydown', (e) => {
 document.getElementById('compilerModal')?.addEventListener('click', (e) => {
     if (e.target.id === 'compilerModal') {
         closeCompiler();
+    }
+});
+
+document.getElementById('codeViewerModal')?.addEventListener('click', (e) => {
+    if (e.target.id === 'codeViewerModal') {
+        closeCodeViewer();
     }
 });
 
@@ -478,11 +485,153 @@ function downloadCourse() {
     showNotification('📥 Скачивание началось! Проверьте папку загрузок.');
 }
 
-// ===== EXERCISES =====
-function openExercises() {
-    // Перенаправление на секцию модулей
-    scrollToSection('modules');
-    showNotification('📝 Выберите модуль чтобы начать задания!');
+// ===== CODE VIEWER =====
+let currentCodeFiles = [];
+let currentCodeContent = '';
+
+async function openCodeViewer() {
+    document.getElementById('codeViewerModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+
+    // Загрузка файлов из beginner/module-01-basics
+    await loadCodeFiles('beginner/module-01-basics');
+}
+
+function closeCodeViewer() {
+    document.getElementById('codeViewerModal').classList.remove('active');
+    document.body.style.overflow = 'auto';
+}
+
+async function loadCodeFiles(path) {
+    const filesList = document.getElementById('codeFilesList');
+    filesList.innerHTML = '<div class="loading">Загрузка файлов...</div>';
+
+    try {
+        const response = await fetch(`${GITHUB_API}/contents/${path}`);
+        if (!response.ok) throw new Error('Files not found');
+
+        const data = await response.json();
+        currentCodeFiles = data.filter(item =>
+            item.type === 'file' && item.name.endsWith('.java')
+        );
+
+        if (currentCodeFiles.length === 0) {
+            filesList.innerHTML = '<div class="loading">Java файлы не найдены</div>';
+            return;
+        }
+
+        filesList.innerHTML = '';
+
+        // Добавляем модули для выбора
+        const modules = [
+            { path: 'beginner/module-01-basics', name: '📚 Module 01 - Basics' },
+            { path: 'beginner/module-02-syntax', name: '📚 Module 02 - Syntax' },
+            { path: 'beginner/module-03-oop-part1', name: '📚 Module 03 - OOP Part 1' },
+            { path: 'beginner/module-04-oop-part2', name: '📚 Module 04 - OOP Part 2' },
+            { path: 'intermediate/module-05-collections', name: '🚀 Module 05 - Collections' },
+            { path: 'intermediate/module-06-streams', name: '🚀 Module 06 - Streams' },
+            { path: 'advanced/final-project-minecraft/src/main/java/com/minecraft', name: '⚡ Minecraft Project' }
+        ];
+
+        // Добавляем селектор модулей
+        const moduleSelector = document.createElement('select');
+        moduleSelector.className = 'code-file-item';
+        moduleSelector.style.width = '100%';
+        moduleSelector.style.marginBottom = '1rem';
+        moduleSelector.innerHTML = modules.map(m =>
+            `<option value="${m.path}" ${m.path === path ? 'selected' : ''}>${m.name}</option>`
+        ).join('');
+        moduleSelector.onchange = (e) => loadCodeFiles(e.target.value);
+        filesList.appendChild(moduleSelector);
+
+        // Добавляем файлы
+        currentCodeFiles.forEach((file, index) => {
+            const fileItem = document.createElement('div');
+            fileItem.className = 'code-file-item';
+            if (index === 0) fileItem.classList.add('active');
+            fileItem.innerHTML = `☕ ${file.name}`;
+            fileItem.onclick = () => loadCodeContent(file, fileItem);
+            filesList.appendChild(fileItem);
+        });
+
+        // Загружаем первый файл
+        if (currentCodeFiles.length > 0) {
+            loadCodeContent(currentCodeFiles[0], filesList.querySelector('.code-file-item:nth-child(2)'));
+        }
+
+    } catch (error) {
+        console.log('Error loading files:', error);
+        filesList.innerHTML = '<div class="loading">Ошибка загрузки файлов</div>';
+    }
+}
+
+async function loadCodeContent(file, element) {
+    // Убираем active у всех
+    document.querySelectorAll('.code-file-item').forEach(item => {
+        if (item.tagName !== 'SELECT') {
+            item.classList.remove('active');
+        }
+    });
+    element.classList.add('active');
+
+    document.getElementById('currentFileName').textContent = file.name;
+    document.getElementById('codeContent').innerHTML = '<div class="loading">Загрузка кода...</div>';
+
+    try {
+        const response = await fetch(file.download_url);
+        if (!response.ok) throw new Error('Code not found');
+
+        const code = await response.text();
+        currentCodeContent = code;
+
+        // Отображаем код с нумерацией строк
+        const lines = code.split('\n');
+        const formattedCode = lines.map(line =>
+            `<span class="code-line">${escapeHtml(line)}</span>`
+        ).join('\n');
+
+        document.getElementById('codeContent').innerHTML = formattedCode;
+
+    } catch (error) {
+        console.log('Error loading code:', error);
+        document.getElementById('codeContent').textContent = 'Ошибка загрузки кода';
+    }
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function copyCurrentCode() {
+    if (!currentCodeContent) {
+        showNotification('❌ Нет кода для копирования');
+        return;
+    }
+
+    navigator.clipboard.writeText(currentCodeContent).then(() => {
+        showNotification('✅ Код скопирован в буфер обмена!');
+    }).catch(() => {
+        showNotification('❌ Ошибка копирования');
+    });
+}
+
+function runCurrentCode() {
+    if (!currentCodeContent) {
+        showNotification('❌ Нет кода для запуска');
+        return;
+    }
+
+    // Закрываем просмотр кода и открываем компилятор
+    closeCodeViewer();
+    openOnlineCompiler();
+
+    // Вставляем код в компилятор
+    setTimeout(() => {
+        document.getElementById('codeEditor').value = currentCodeContent;
+        showNotification('✅ Код загружен в компилятор!');
+    }, 300);
 }
 
 // ===== NOTIFICATIONS =====
