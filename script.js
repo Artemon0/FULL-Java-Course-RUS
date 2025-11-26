@@ -1,801 +1,551 @@
-// ===== CONFIGURATION =====
-const GITHUB_USERNAME = 'artemon0';
-const GITHUB_REPO = 'FULL-Java-Course-RUS';
-const GITHUB_API = `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}`;
+// ===== JAVA COURSE WEBSITE - ULTIMATE SCRIPT =====
+// Максимальная функциональность + красота + практичность
 
-// ===== SMOOTH SCROLLING =====
-function scrollToSection(id) {
-    const element = document.getElementById(id);
-    if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+const CONFIG = {
+    github: {
+        username: 'artemon0',
+        repo: 'FULL-Java-Course-RUS',
+        api: 'https://api.github.com/repos/artemon0/FULL-Java-Course-RUS'
+    },
+    modules: {
+        beginner: [
+            { num: '01', name: 'Основы Java', desc: 'Переменные, типы данных, операторы', path: 'beginner/module-01-basics' },
+            { num: '02', name: 'Синтаксис', desc: 'Условия, циклы, массивы', path: 'beginner/module-02-syntax' },
+            { num: '03', name: 'ООП Часть 1', desc: 'Классы, объекты, инкапсуляция', path: 'beginner/module-03-oop-part1' },
+            { num: '04', name: 'ООП Часть 2', desc: 'Наследование, полиморфизм', path: 'beginner/module-04-oop-part2' },
+            { num: '🎮', name: 'Проект: Текстовая RPG', desc: 'Финальный проект уровня', path: 'beginner/project-text-rpg', isProject: true }
+        ],
+        intermediate: [
+            { num: '05', name: 'Коллекции', desc: 'List, Set, Map, Generics', path: 'intermediate/module-05-collections' },
+            { num: '06', name: 'Stream API', desc: 'Lambda, функциональное программирование', path: 'intermediate/module-06-streams' },
+            { num: '07', name: 'IO/NIO', desc: 'Работа с файлами', path: 'intermediate/module-07-io' },
+            { num: '08', name: 'Многопоточность', desc: 'Thread, синхронизация', path: 'intermediate/module-08-threads' },
+            { num: '09', name: 'Сеть и JDBC', desc: 'Sockets, базы данных', path: 'intermediate/module-09-network' }
+        ],
+        advanced: [
+            { num: '10', name: 'Maven/Gradle', desc: 'Системы сборки', path: 'advanced/module-10-build' },
+            { num: '11', name: 'JUnit', desc: 'Тестирование', path: 'advanced/module-11-testing' },
+            { num: '12', name: 'Spring Basics', desc: 'DI, Spring Boot', path: 'advanced/module-12-spring-basics' },
+            { num: '13', name: 'Spring Advanced', desc: 'MVC, Data, Security', path: 'advanced/module-13-spring' },
+            { num: '14', name: 'JavaFX', desc: 'GUI приложения', path: 'advanced/module-14-javafx' },
+            { num: '15', name: 'Архитектура', desc: 'Паттерны проектирования', path: 'advanced/module-15-patterns' },
+            { num: '16', name: 'Оптимизация', desc: 'Производительность', path: 'advanced/module-16-optimization' },
+            { num: '🎮', name: 'MINECRAFT CLONE', desc: '3D игра с OpenGL', path: 'advanced/final-project-minecraft', isProject: true }
+        ]
     }
+};
+
+// ===== UTILITY FUNCTIONS =====
+const Utils = {
+    // Плавная прокрутка к элементу
+    scrollTo(id) {
+        const element = document.getElementById(id);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    },
+
+    // Анимация счетчика
+    animateCounter(element, target, duration = 2000) {
+        let start = 0;
+        const increment = target / (duration / 16);
+        const timer = setInterval(() => {
+            start += increment;
+            if (start >= target) {
+                element.textContent = target;
+                clearInterval(timer);
+            } else {
+                element.textContent = Math.floor(start);
+            }
+        }, 16);
+    },
+
+    // Показать уведомление
+    notify(message, type = 'info') {
+        const colors = {
+            info: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+            success: 'linear-gradient(135deg, #10b981, #059669)',
+            error: 'linear-gradient(135deg, #ef4444, #dc2626)',
+            warning: 'linear-gradient(135deg, #f59e0b, #d97706)'
+        };
+
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: ${colors[type]};
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            z-index: 10001;
+            animation: slideIn 0.3s ease;
+            max-width: 350px;
+            font-weight: 500;
+        `;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    },
+
+    // Копировать в буфер обмена
+    async copyToClipboard(text) {
+        try {
+            await navigator.clipboard.writeText(text);
+            this.notify('✅ Скопировано в буфер обмена!', 'success');
+            return true;
+        } catch (err) {
+            this.notify('❌ Ошибка копирования', 'error');
+            return false;
+        }
+    },
+
+    // Открыть URL в новой вкладке
+    openURL(url) {
+        window.open(url, '_blank');
+    },
+
+    // Создать элемент из HTML
+    createElement(html) {
+        const template = document.createElement('template');
+        template.innerHTML = html.trim();
+        return template.content.firstChild;
+    }
+};
+
+// ===== NAVIGATION =====
+const Navigation = {
+    init() {
+        this.setupScrollEffects();
+        this.setupMobileMenu();
+        this.setupActiveLinks();
+        this.setupBackToTop();
+    },
+
+    setupScrollEffects() {
+        const navbar = document.getElementById('navbar');
+        const progressBar = document.getElementById('progressBar');
+
+        window.addEventListener('scroll', () => {
+            // Navbar shadow
+            if (window.scrollY > 50) {
+                navbar?.classList.add('scrolled');
+            } else {
+                navbar?.classList.remove('scrolled');
+            }
+
+            // Progress bar
+            const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (window.pageYOffset / windowHeight) * 100;
+            if (progressBar) progressBar.style.width = scrolled + '%';
+        });
+    },
+
+    setupMobileMenu() {
+        const toggle = document.getElementById('mobileMenuToggle');
+        const menu = document.getElementById('navMenu');
+        const links = document.querySelectorAll('.nav-link');
+
+        toggle?.addEventListener('click', () => {
+            toggle.classList.toggle('active');
+            menu?.classList.toggle('active');
+        });
+
+        links.forEach(link => {
+            link.addEventListener('click', () => {
+                toggle?.classList.remove('active');
+                menu?.classList.remove('active');
+            });
+        });
+    },
+
+    setupActiveLinks() {
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 100) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    },
+
+    setupBackToTop() {
+        const button = document.getElementById('backToTop');
+        if (!button) return;
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                button.classList.add('visible');
+            } else {
+                button.classList.remove('visible');
+            }
+        });
+    }
+};
+
+// ===== GITHUB INTEGRATION =====
+const GitHub = {
+    async fetchStats() {
+        try {
+            const response = await fetch(CONFIG.github.api);
+            if (!response.ok) throw new Error('API error');
+
+            const data = await response.json();
+
+            document.getElementById('githubStars').textContent = data.stargazers_count || '0';
+            document.getElementById('githubForks').textContent = data.forks_count || '0';
+            document.getElementById('githubWatchers').textContent = data.subscribers_count || '0';
+            document.getElementById('githubIssues').textContent = data.open_issues_count || '0';
+
+            const lastUpdate = new Date(data.updated_at);
+            document.getElementById('lastUpdate').textContent = `Обновлено: ${lastUpdate.toLocaleDateString('ru-RU')}`;
+        } catch (error) {
+            console.log('GitHub stats unavailable:', error);
+            // Fallback values
+            document.getElementById('githubStars').textContent = '⭐';
+            document.getElementById('githubForks').textContent = '🔄';
+            document.getElementById('githubWatchers').textContent = '👁️';
+            document.getElementById('githubIssues').textContent = '📝';
+        }
+    },
+
+    downloadCourse() {
+        const url = `https://github.com/${CONFIG.github.username}/${CONFIG.github.repo}/archive/refs/heads/main.zip`;
+        Utils.openURL(url);
+        Utils.notify('📥 Скачивание началось! Проверьте папку загрузок.', 'success');
+    },
+
+    openRepo() {
+        Utils.openURL(`https://github.com/${CONFIG.github.username}/${CONFIG.github.repo}`);
+    },
+
+    openModule(path) {
+        Utils.openURL(`https://github.com/${CONFIG.github.username}/${CONFIG.github.repo}/tree/main/${path}`);
+    }
+};
+
+// ===== MODULES SYSTEM =====
+const Modules = {
+    init() {
+        this.setupTabs();
+        this.renderModules('beginner');
+        this.renderModules('intermediate');
+        this.renderModules('advanced');
+    },
+
+    setupTabs() {
+        const tabs = document.querySelectorAll('.tab-btn');
+        const panels = document.querySelectorAll('.level-panel');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const level = tab.getAttribute('data-level');
+
+                tabs.forEach(t => t.classList.remove('active'));
+                panels.forEach(p => p.classList.remove('active'));
+
+                tab.classList.add('active');
+                document.getElementById(level)?.classList.add('active');
+            });
+        });
+    },
+
+    renderModules(level) {
+        const container = document.getElementById(`${level}Modules`);
+        if (!container) return;
+
+        const modules = CONFIG.modules[level];
+        container.innerHTML = modules.map(module => `
+            <div class="module-card ${module.isProject ? 'project-card' : ''}" 
+                 onclick="GitHub.openModule('${module.path}')">
+                <div class="module-number">${module.num}</div>
+                <div class="module-info">
+                    <h4>${module.name}</h4>
+                    <p>${module.desc}</p>
+                </div>
+                <div class="module-arrow">→</div>
+            </div>
+        `).join('');
+    }
+};
+
+// ===== ANIMATIONS =====
+const Animations = {
+    init() {
+        this.setupCounters();
+        this.setupParticles();
+        this.setupRevealEffects();
+    },
+
+    setupCounters() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const stats = entry.target.querySelectorAll('.stat-number');
+                    stats.forEach(stat => {
+                        const target = parseInt(stat.getAttribute('data-target'));
+                        Utils.animateCounter(stat, target);
+                    });
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        const heroStats = document.querySelector('.hero-stats');
+        if (heroStats) observer.observe(heroStats);
+    },
+
+    setupParticles() {
+        const container = document.querySelector('.hero-particles');
+        if (!container) return;
+
+        for (let i = 0; i < 50; i++) {
+            const particle = document.createElement('div');
+            particle.style.cssText = `
+                position: absolute;
+                width: ${Math.random() * 4 + 1}px;
+                height: ${Math.random() * 4 + 1}px;
+                background: rgba(99, 102, 241, ${Math.random() * 0.5});
+                border-radius: 50%;
+                left: ${Math.random() * 100}%;
+                top: ${Math.random() * 100}%;
+                animation: float ${Math.random() * 10 + 5}s infinite ease-in-out;
+                animation-delay: ${Math.random() * 5}s;
+            `;
+            container.appendChild(particle);
+        }
+    },
+
+    setupRevealEffects() {
+        const heroContent = document.querySelector('.hero-content');
+        if (heroContent) {
+            heroContent.style.opacity = '0';
+            heroContent.style.transform = 'translateY(30px)';
+            setTimeout(() => {
+                heroContent.style.transition = 'all 1s ease';
+                heroContent.style.opacity = '1';
+                heroContent.style.transform = 'translateY(0)';
+            }, 100);
+        }
+    }
+};
+
+// ===== EXTERNAL TOOLS =====
+const Tools = {
+    openCompiler() {
+        Utils.openURL('https://www.jdoodle.com/online-java-compiler');
+        Utils.notify('🌐 Открываем JDoodle компилятор...', 'info');
+    },
+
+    openProgramiz() {
+        Utils.openURL('https://www.programiz.com/java-programming/online-compiler/');
+    },
+
+    openOnlineGDB() {
+        Utils.openURL('https://www.onlinegdb.com/online_java_compiler');
+    },
+
+    openCodespaces() {
+        Utils.openURL(`https://github.com/${CONFIG.github.username}/${CONFIG.github.repo}/codespaces`);
+    }
+};
+
+// ===== KEYBOARD SHORTCUTS =====
+const Shortcuts = {
+    init() {
+        document.addEventListener('keydown', (e) => {
+            // Ctrl/Cmd + K - поиск
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                Utils.scrollTo('modules');
+            }
+
+            // Ctrl/Cmd + D - скачать
+            if ((e.ctrlKey || e.metaKey) && e.key === 'd') {
+                e.preventDefault();
+                GitHub.downloadCourse();
+            }
+
+            // Ctrl/Cmd + / - компилятор
+            if ((e.ctrlKey || e.metaKey) && e.key === '/') {
+                e.preventDefault();
+                Tools.openCompiler();
+            }
+
+            // Escape - закрыть меню
+            if (e.key === 'Escape') {
+                const toggle = document.getElementById('mobileMenuToggle');
+                const menu = document.getElementById('navMenu');
+                toggle?.classList.remove('active');
+                menu?.classList.remove('active');
+            }
+        });
+    }
+};
+
+// ===== EASTER EGGS =====
+const EasterEggs = {
+    init() {
+        this.konamiCode();
+        this.consoleArt();
+    },
+
+    konamiCode() {
+        let sequence = [];
+        const pattern = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+
+        document.addEventListener('keydown', (e) => {
+            sequence.push(e.key);
+            sequence = sequence.slice(-10);
+
+            if (sequence.join(',') === pattern.join(',')) {
+                document.body.style.animation = 'rainbow 2s infinite';
+                Utils.notify('🎉 Konami Code активирован! Вы нашли секрет!', 'success');
+                setTimeout(() => {
+                    document.body.style.animation = '';
+                }, 5000);
+            }
+        });
+    },
+
+    consoleArt() {
+        console.log('%c☕ Java Course', 'font-size: 40px; font-weight: bold; background: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent;');
+        console.log('%cДобро пожаловать в курс Java!', 'font-size: 16px; color: #6366f1;');
+        console.log('%cGitHub: https://github.com/' + CONFIG.github.username + '/' + CONFIG.github.repo, 'font-size: 12px; color: #8b5cf6;');
+        console.log('%c\nГорячие клавиши:', 'font-size: 14px; font-weight: bold; color: #6366f1;');
+        console.log('%cCtrl+K - Перейти к модулям', 'font-size: 12px; color: #8b5cf6;');
+        console.log('%cCtrl+D - Скачать курс', 'font-size: 12px; color: #8b5cf6;');
+        console.log('%cCtrl+/ - Открыть компилятор', 'font-size: 12px; color: #8b5cf6;');
+    }
+};
+
+// ===== GLOBAL FUNCTIONS (для onclick в HTML) =====
+function scrollToSection(id) {
+    Utils.scrollTo(id);
 }
 
 function scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-    });
-});
-
-// ===== PROGRESS BAR =====
-window.addEventListener('scroll', () => {
-    const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-    const scrolled = (window.pageYOffset / windowHeight) * 100;
-    document.getElementById('progressBar').style.width = scrolled + '%';
-});
-
-// ===== NAVBAR SCROLL EFFECT =====
-const navbar = document.getElementById('navbar');
-window.addEventListener('scroll', () => {
-    if (window.scrollY > 50) {
-        navbar.classList.add('scrolled');
-    } else {
-        navbar.classList.remove('scrolled');
-    }
-});
-
-// ===== ACTIVE NAVIGATION =====
-const sections = document.querySelectorAll('section[id]');
-const navLinks = document.querySelectorAll('.nav-link');
-
-window.addEventListener('scroll', () => {
-    let current = '';
-    sections.forEach(section => {
-        const sectionTop = section.offsetTop;
-        if (pageYOffset >= sectionTop - 100) {
-            current = section.getAttribute('id');
-        }
-    });
-
-    navLinks.forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('href') === `#${current}`) {
-            link.classList.add('active');
-        }
-    });
-});
-
-// ===== MOBILE MENU =====
-const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-const navMenu = document.getElementById('navMenu');
-
-mobileMenuToggle.addEventListener('click', () => {
-    mobileMenuToggle.classList.toggle('active');
-    navMenu.classList.toggle('active');
-});
-
-// Close mobile menu when clicking on a link
-navLinks.forEach(link => {
-    link.addEventListener('click', () => {
-        mobileMenuToggle.classList.remove('active');
-        navMenu.classList.remove('active');
-    });
-});
-
-// ===== BACK TO TOP BUTTON =====
-const backToTop = document.getElementById('backToTop');
-window.addEventListener('scroll', () => {
-    if (window.scrollY > 300) {
-        backToTop.classList.add('visible');
-    } else {
-        backToTop.classList.remove('visible');
-    }
-});
-
-// ===== COUNTER ANIMATION =====
-function animateCounter(element, target, duration = 2000) {
-    let start = 0;
-    const increment = target / (duration / 16);
-
-    const timer = setInterval(() => {
-        start += increment;
-        if (start >= target) {
-            element.textContent = target;
-            clearInterval(timer);
-        } else {
-            element.textContent = Math.floor(start);
-        }
-    }, 16);
+function downloadCourse() {
+    GitHub.downloadCourse();
 }
 
-// Animate stats when visible
-const statsObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            const statNumbers = entry.target.querySelectorAll('.stat-number');
-            statNumbers.forEach(stat => {
-                const target = parseInt(stat.getAttribute('data-target'));
-                animateCounter(stat, target);
-            });
-            statsObserver.unobserve(entry.target);
-        }
-    });
-}, { threshold: 0.5 });
-
-const heroStats = document.querySelector('.hero-stats');
-if (heroStats) {
-    statsObserver.observe(heroStats);
-}
-
-// ===== LEVEL TABS =====
-const tabBtns = document.querySelectorAll('.tab-btn');
-const levelPanels = document.querySelectorAll('.level-panel');
-
-tabBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-        const level = btn.getAttribute('data-level');
-
-        tabBtns.forEach(b => b.classList.remove('active'));
-        levelPanels.forEach(p => p.classList.remove('active'));
-
-        btn.classList.add('active');
-        document.getElementById(level).classList.add('active');
-    });
-});
-
-// ===== GITHUB API - FETCH REPO STATS =====
-async function fetchGitHubStats() {
-    try {
-        const response = await fetch(GITHUB_API);
-        if (!response.ok) throw new Error('GitHub API error');
-
-        const data = await response.json();
-
-        // Update stats
-        document.getElementById('githubStars').textContent = data.stargazers_count || '0';
-        document.getElementById('githubForks').textContent = data.forks_count || '0';
-        document.getElementById('githubWatchers').textContent = data.subscribers_count || '0';
-        document.getElementById('githubIssues').textContent = data.open_issues_count || '0';
-
-        // Update last update date
-        const lastUpdate = new Date(data.updated_at);
-        document.getElementById('lastUpdate').textContent = `Обновлено: ${lastUpdate.toLocaleDateString('ru-RU')}`;
-
-    } catch (error) {
-        console.log('GitHub stats not available:', error);
-        // Set default values
-        document.getElementById('githubStars').textContent = '⭐';
-        document.getElementById('githubForks').textContent = '🔄';
-        document.getElementById('githubWatchers').textContent = '👁️';
-        document.getElementById('githubIssues').textContent = '📝';
-    }
-}
-
-// ===== GITHUB API - FETCH MODULES =====
-async function fetchModules(level) {
-    const modulesContainer = document.getElementById(`${level}Modules`);
-
-    try {
-        const response = await fetch(`${GITHUB_API}/contents/${level}`);
-        if (!response.ok) throw new Error('Modules not found');
-
-        const data = await response.json();
-        const modules = data.filter(item => item.type === 'dir' && item.name.startsWith('module'));
-
-        if (modules.length === 0) {
-            modulesContainer.innerHTML = '<div class="loading">Модули скоро появятся...</div>';
-            return;
+// ===== STYLES INJECTION =====
+const injectStyles = () => {
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); }
+            25% { transform: translateY(-20px) translateX(10px); }
+            50% { transform: translateY(-40px) translateX(-10px); }
+            75% { transform: translateY(-20px) translateX(10px); }
         }
 
-        modulesContainer.innerHTML = '';
+        @keyframes slideIn {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
 
-        modules.forEach((module, index) => {
-            const moduleNumber = (index + 1).toString().padStart(2, '0');
-            const moduleName = module.name.replace(/module-\d+-/, '').replace(/-/g, ' ');
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(400px); opacity: 0; }
+        }
 
-            const moduleCard = document.createElement('div');
-            moduleCard.className = 'module-card';
-            moduleCard.innerHTML = `
-                <div class="module-number">${moduleNumber}</div>
-                <div class="module-info">
-                    <h4>${capitalizeWords(moduleName)}</h4>
-                    <p>Нажмите чтобы открыть на GitHub</p>
-                </div>
-            `;
-            moduleCard.onclick = () => window.open(module.html_url, '_blank');
-            modulesContainer.appendChild(moduleCard);
-        });
+        @keyframes rainbow {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
 
-    } catch (error) {
-        console.log(`Modules for ${level} not available:`, error);
-        modulesContainer.innerHTML = createDefaultModules(level);
-    }
-}
+        .module-card {
+            position: relative;
+            overflow: hidden;
+        }
 
-// ===== CREATE DEFAULT MODULES =====
-function createDefaultModules(level) {
-    const modules = {
-        beginner: [
-            { num: '01', name: 'Основы Java', desc: 'Переменные, типы данных, операторы' },
-            { num: '02', name: 'Синтаксис', desc: 'Условия, циклы, массивы' },
-            { num: '03', name: 'ООП Часть 1', desc: 'Классы, объекты, инкапсуляция' },
-            { num: '04', name: 'ООП Часть 2', desc: 'Наследование, полиморфизм' },
-            { num: '🎮', name: 'Финальный проект', desc: 'Текстовая RPG игра', isProject: true }
-        ],
-        intermediate: [
-            { num: '05', name: 'Коллекции', desc: 'List, Set, Map, Generics' },
-            { num: '06', name: 'Stream API', desc: 'Lambda, функциональное программирование' },
-            { num: '07', name: 'IO/NIO', desc: 'Работа с файлами' },
-            { num: '08', name: 'Многопоточность', desc: 'Thread, синхронизация' },
-            { num: '09', name: 'Сеть и JDBC', desc: 'Sockets, базы данных' },
-            { num: '🎮', name: 'Финальные проекты', desc: 'Чат + База данных', isProject: true }
-        ],
-        advanced: [
-            { num: '10', name: 'Maven/Gradle', desc: 'Системы сборки' },
-            { num: '11', name: 'JUnit', desc: 'Тестирование' },
-            { num: '12', name: 'Spring Basics', desc: 'DI, Spring Boot' },
-            { num: '13', name: 'Spring Advanced', desc: 'MVC, Data, Security' },
-            { num: '14', name: 'JavaFX', desc: 'GUI приложения' },
-            { num: '15', name: 'Архитектура', desc: 'Паттерны проектирования' },
-            { num: '16', name: 'Оптимизация', desc: 'Производительность' },
-            { num: '🎮', name: 'MINECRAFT', desc: '3D игра с OpenGL', isProject: true }
-        ]
-    };
+        .module-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.1), transparent);
+            transition: left 0.5s;
+        }
 
-    return modules[level].map(m => `
-        <div class="module-card">
-            <div class="module-number">${m.num}</div>
-            <div class="module-info">
-                <h4>${m.name}</h4>
-                <p>${m.desc}</p>
-            </div>
-        </div>
-    `).join('');
-}
+        .module-card:hover::before {
+            left: 100%;
+        }
 
-// ===== HELPER FUNCTIONS =====
-function capitalizeWords(str) {
-    return str.split(' ').map(word =>
-        word.charAt(0).toUpperCase() + word.slice(1)
-    ).join(' ');
-}
+        .module-arrow {
+            font-size: 1.5rem;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s;
+        }
 
-// ===== INTERSECTION OBSERVER FOR ANIMATIONS =====
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
+        .module-card:hover .module-arrow {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .project-card {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+            border: 2px solid rgba(99, 102, 241, 0.3);
+        }
+
+        .project-card:hover {
+            border-color: rgba(99, 102, 241, 0.6);
+            box-shadow: 0 20px 60px rgba(99, 102, 241, 0.2);
+        }
+    `;
+    document.head.appendChild(style);
 };
 
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
-        }
-    });
-}, observerOptions);
+// ===== INITIALIZATION =====
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('🚀 Initializing Java Course Website...');
 
-// Observe feature cards
-document.querySelectorAll('.feature-card').forEach(card => {
-    card.style.opacity = '0';
-    card.style.transform = 'translateY(30px)';
-    card.style.transition = 'all 0.6s ease';
-    observer.observe(card);
+    // Inject styles
+    injectStyles();
+
+    // Initialize all modules
+    Navigation.init();
+    GitHub.fetchStats();
+    Modules.init();
+    Animations.init();
+    Shortcuts.init();
+    EasterEggs.init();
+
+    console.log('✅ Website initialized successfully!');
 });
 
-// ===== PARTICLES EFFECT =====
-function createParticles() {
-    const particlesContainer = document.querySelector('.hero-particles');
-    if (!particlesContainer) return;
-
-    for (let i = 0; i < 50; i++) {
-        const particle = document.createElement('div');
-        particle.style.cssText = `
-            position: absolute;
-            width: ${Math.random() * 4 + 1}px;
-            height: ${Math.random() * 4 + 1}px;
-            background: rgba(99, 102, 241, ${Math.random() * 0.5});
-            border-radius: 50%;
-            left: ${Math.random() * 100}%;
-            top: ${Math.random() * 100}%;
-            animation: float ${Math.random() * 10 + 5}s infinite ease-in-out;
-            animation-delay: ${Math.random() * 5}s;
-        `;
-        particlesContainer.appendChild(particle);
-    }
-}
-
-// Add float animation
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes float {
-        0%, 100% { transform: translateY(0) translateX(0); }
-        25% { transform: translateY(-20px) translateX(10px); }
-        50% { transform: translateY(-40px) translateX(-10px); }
-        75% { transform: translateY(-20px) translateX(10px); }
-    }
-`;
-document.head.appendChild(style);
-
-// ===== CONSOLE MESSAGE =====
-console.log('%c☕ Java Course', 'font-size: 40px; font-weight: bold; background: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent;');
-console.log('%cДобро пожаловать в курс Java!', 'font-size: 16px; color: #6366f1;');
-console.log('%cGitHub: https://github.com/' + GITHUB_USERNAME + '/' + GITHUB_REPO, 'font-size: 12px; color: #8b5cf6;');
-
-// ===== INITIALIZE ON PAGE LOAD =====
-window.addEventListener('DOMContentLoaded', () => {
-    // Fetch GitHub stats
-    fetchGitHubStats();
-
-    // Fetch modules for all levels
-    fetchModules('beginner');
-    fetchModules('intermediate');
-    fetchModules('advanced');
-
-    // Create particles
-    createParticles();
-
-    // Add smooth reve    const heroContent = document.querySelector('.hero-content');
-    if (heroContent) {
-        heroContent.style.opacity = '0';
-        heroContent.stysform = 'translateY(30px)';
-        setTimeout(() => {
-            heroContent.style.transition = 'all 1s ease';
-            heroContent.style.opacity = '1';
-            heroContent.style.transform = 'translateY(0)';
-        }, 100);
-    }
-});
-
-// ===== EASTER EGG: KONAMI CODE =====
-let konamiCode = [];
-const konamiPattern = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
-
-document.addEventListener('keydown', (e) => {
-    konamiCode.push(e.key);
-    konamiCode = konamiCode.slice(-10);
-
-    if (konamiCode.join(',') === konamiPattern.join(',')) {
-        document.body.style.animation = 'rainbow 2s infinite';
-        alert('🎉 Вы нашли секретный код! Поздравляем!');
-        setTimeout(() => {
-            document.body.style.animation = '';
-        }, 5000);
-    }
-});
-
-const rainbowStyle = document.createElement('style');
-rainbowStyle.textContent = `
-    @keyframes rainbow {
-        0% { filter: hue-rotate(0deg); }
-        100% { filter: hue-rotate(360deg); }
-    }
-`;
-document.head.appendChild(rainbowStyle);
-
-
-// ===== ONLINE COMPILER =====
-function openOnlineCompiler() {
-    document.getElementById('compilerModal').classList.add('active');
-    document.body.style.overflow = 'hidden';
-}
-
-function closeCompiler() {
-    document.getElementById('compilerModal').classList.remove('active');
-    document.body.style.overflow = 'auto';
-}
-
-function clearCode() {
-    document.getElementById('codeEditor').value = '';
-}
-
-function loadExample() {
-    const examples = [
-        `public class Main {
-    public static void main(String[] args) {
-        // Пример: Hello World
-        System.out.println("Привет, Java!");
-    }
-}`,
-        `public class Main {
-    public static void main(String[] args) {
-        // Пример: Переменные
-        int age = 25;
-        String name = "Студент";
-        System.out.println("Имя: " + name);
-        System.out.println("Возраст: " + age);
-    }
-}`,
-        `public class Main {
-    public static void main(String[] args) {
-        // Пример: Цикл
-        for (int i = 1; i <= 5; i++) {
-            System.out.println("Число: " + i);
-        }
-    }
-}`,
-        `public class Main {
-    public static void main(String[] args) {
-        // Пример: Массив
-        int[] numbers = {1, 2, 3, 4, 5};
-        for (int num : numbers) {
-            System.out.println("Элемент: " + num);
-        }
-    }
-}`,
-        `public class Main {
-    public static void main(String[] args) {
-        // Пример: Условия
-        int score = 85;
-        if (score >= 90) {
-            System.out.println("Отлично!");
-        } else if (score >= 70) {
-            System.out.println("Хорошо!");
-        } else {
-            System.out.println("Нужно подучить");
-        }
-    }
-}`
-    ];
-
-    const randomExample = examples[Math.floor(Math.random() * examples.length)];
-    document.getElementById('codeEditor').value = randomExample;
-}
-
-function openExternalCompiler() {
-    const code = document.getElementById('codeEditor').value;
-
-    // Копируем код в буфер обмена
-    navigator.clipboard.writeText(code).then(() => {
-        showNotification('✅ Код скопирован! Открываем JDoodle...');
-
-        // Открываем JDoodle в новой вкладке
-        setTimeout(() => {
-            window.open('https://www.jdoodle.com/online-java-compiler', '_blank');
-        }, 500);
-    }).catch(() => {
-        // Если не удалось скопировать, просто открываем компилятор
-        window.open('https://www.jdoodle.com/online-java-compiler', '_blank');
-        showNotification('💡 Вставьте код вручную в JDoodle');
-    });
-}
-
-async function runCode() {
-    const code = document.getElementById('codeEditor').value;
-    const output = document.getElementById('compilerOutput');
-
-    output.textContent = '⏳ Компиляция и запуск...';
-
-    try {
-        // Пробуем несколько API по очереди
-        let result = null;
-
-        // 1. Пробуем Piston API (бесплатный, без ключей)
-        try {
-            const pistonResponse = await fetch('https://emkc.org/api/v2/piston/execute', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    language: 'java',
-                    version: '15.0.2',
-                    files: [{
-                        name: 'Main.java',
-                        content: code
-                    }]
-                })
-            });
-
-            if (pistonResponse.ok) {
-                result = await pistonResponse.json();
-
-                if (result.run) {
-                    let outputText = '';
-                    if (result.run.stdout) outputText += result.run.stdout;
-                    if (result.run.stderr) outputText += '\n❌ Ошибки:\n' + result.run.stderr;
-                    if (result.compile && result.compile.stderr) outputText += '\n❌ Ошибки компиляции:\n' + result.compile.stderr;
-
-                    output.textContent = outputText || '✅ Программа выполнена успешно (без вывода)';
-                    return;
-                }
-            }
-        } catch (e) {
-            console.log('Piston API failed:', e);
-        }
-
-        // 2. Пробуем OneCompiler API
-        try {
-            const oneCompilerResponse = await fetch('https://onecompiler.com/api/code/exec', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    language: 'java',
-                    stdin: '',
-                    files: [{
-                        name: 'Main.java',
-                        content: code
-                    }]
-                })
-            });
-
-            if (oneCompilerResponse.ok) {
-                result = await oneCompilerResponse.json();
-                if (result.stdout || result.stderr) {
-                    output.textContent = result.stdout || result.stderr;
-                    return;
-                }
-            }
-        } catch (e) {
-            console.log('OneCompiler API failed:', e);
-        }
-
-        // 3. Если все API не работают - показываем инструкцию
-        output.innerHTML = `❌ Онлайн компиляторы временно недоступны
-
-<span style="color: #10b981;">✅ Альтернативные способы запуска:</span>
-
-<span style="color: #6366f1;">1. Используйте онлайн IDE:</span>
-   • <a href="https://www.jdoodle.com/online-java-compiler" target="_blank" style="color: #8b5cf6;">JDoodle</a>
-   • <a href="https://www.programiz.com/java-programming/online-compiler/" target="_blank" style="color: #8b5cf6;">Programiz</a>
-   • <a href="https://www.onlinegdb.com/online_java_compiler" target="_blank" style="color: #8b5cf6;">OnlineGDB</a>
-
-<span style="color: #6366f1;">2. Установите Java локально:</span>
-   • Скачайте JDK 18+
-   • Установите IntelliJ IDEA
-   • Скачайте курс с GitHub
-
-<span style="color: #6366f1;">3. Используйте GitHub Codespaces:</span>
-   • Откройте репозиторий на GitHub
-   • Нажмите "Code" → "Codespaces"
-   • Запускайте код в облаке бесплатно!
-
-<span style="color: #f59e0b;">💡 Совет:</span> Для серьезного обучения рекомендуем 
-установить IntelliJ IDEA Community (бесплатно)`;
-
-    } catch (error) {
-        output.innerHTML = `❌ Ошибка подключения к компилятору
-
-<span style="color: #10b981;">✅ Что делать:</span>
-
-1. Проверьте интернет соединение
-2. Попробуйте обновить страницу (F5)
-3. Используйте внешние онлайн компиляторы:
-   • <a href="https://www.jdoodle.com/online-java-compiler" target="_blank" style="color: #8b5cf6;">JDoodle</a>
-   • <a href="https://www.programiz.com/java-programming/online-compiler/" target="_blank" style="color: #8b5cf6;">Programiz</a>
-
-4. Или установите Java локально для лучшего опыта`;
-    }
-}
-
-// Close modal on Escape key
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-        closeCompiler();
-        closeCodeViewer();
-    }
-});
-
-// Close modal on background click
-document.getElementById('compilerModal')?.addEventListener('click', (e) => {
-    if (e.target.id === 'compilerModal') {
-        closeCompiler();
-    }
-});
-
-document.getElementById('codeViewerModal')?.addEventListener('click', (e) => {
-    if (e.target.id === 'codeViewerModal') {
-        closeCodeViewer();
-    }
-});
-
-// ===== DOWNLOAD COURSE =====
-function downloadCourse() {
-    // Скачивание ZIP архива репозитория
-    const downloadUrl = `https://github.com/${GITHUB_USERNAME}/${GITHUB_REPO}/archive/refs/heads/main.zip`;
-    window.open(downloadUrl, '_blank');
-
-    // Показать уведомление
-    showNotification('📥 Скачивание началось! Проверьте папку загрузок.');
-}
-
-// ===== CODE VIEWER =====
-let currentCodeFiles = [];
-let currentCodeContent = '';
-
-async function openCodeViewer() {
-    document.getElementById('codeViewerModal').classList.add('active');
-    document.body.style.overflow = 'hidden';
-
-    // Загрузка файлов из beginner/module-01-basics
-    await loadCodeFiles('beginner/module-01-basics');
-}
-
-function closeCodeViewer() {
-    document.getElementById('codeViewerModal').classList.remove('active');
-    document.body.style.overflow = 'auto';
-}
-
-async function loadCodeFiles(path) {
-    const filesList = document.getElementById('codeFilesList');
-    filesList.innerHTML = '<div class="loading">Загрузка файлов...</div>';
-
-    try {
-        const response = await fetch(`${GITHUB_API}/contents/${path}`);
-        if (!response.ok) throw new Error('Files not found');
-
-        const data = await response.json();
-        currentCodeFiles = data.filter(item =>
-            item.type === 'file' && item.name.endsWith('.java')
-        );
-
-        if (currentCodeFiles.length === 0) {
-            filesList.innerHTML = '<div class="loading">Java файлы не найдены</div>';
-            return;
-        }
-
-        filesList.innerHTML = '';
-
-        // Добавляем модули для выбора
-        const modules = [
-            { path: 'beginner/module-01-basics', name: '📚 Module 01 - Basics' },
-            { path: 'beginner/module-02-syntax', name: '📚 Module 02 - Syntax' },
-            { path: 'beginner/module-03-oop-part1', name: '📚 Module 03 - OOP Part 1' },
-            { path: 'beginner/module-04-oop-part2', name: '📚 Module 04 - OOP Part 2' },
-            { path: 'intermediate/module-05-collections', name: '🚀 Module 05 - Collections' },
-            { path: 'intermediate/module-06-streams', name: '🚀 Module 06 - Streams' },
-            { path: 'advanced/final-project-minecraft/src/main/java/com/minecraft', name: '⚡ Minecraft Project' }
-        ];
-
-        // Добавляем селектор модулей
-        const moduleSelector = document.createElement('select');
-        moduleSelector.className = 'code-file-item';
-        moduleSelector.style.width = '100%';
-        moduleSelector.style.marginBottom = '1rem';
-        moduleSelector.innerHTML = modules.map(m =>
-            `<option value="${m.path}" ${m.path === path ? 'selected' : ''}>${m.name}</option>`
-        ).join('');
-        moduleSelector.onchange = (e) => loadCodeFiles(e.target.value);
-        filesList.appendChild(moduleSelector);
-
-        // Добавляем файлы
-        currentCodeFiles.forEach((file, index) => {
-            const fileItem = document.createElement('div');
-            fileItem.className = 'code-file-item';
-            if (index === 0) fileItem.classList.add('active');
-            fileItem.innerHTML = `☕ ${file.name}`;
-            fileItem.onclick = () => loadCodeContent(file, fileItem);
-            filesList.appendChild(fileItem);
-        });
-
-        // Загружаем первый файл
-        if (currentCodeFiles.length > 0) {
-            loadCodeContent(currentCodeFiles[0], filesList.querySelector('.code-file-item:nth-child(2)'));
-        }
-
-    } catch (error) {
-        console.log('Error loading files:', error);
-        filesList.innerHTML = '<div class="loading">Ошибка загрузки файлов</div>';
-    }
-}
-
-async function loadCodeContent(file, element) {
-    // Убираем active у всех
-    document.querySelectorAll('.code-file-item').forEach(item => {
-        if (item.tagName !== 'SELECT') {
-            item.classList.remove('active');
-        }
-    });
-    element.classList.add('active');
-
-    document.getElementById('currentFileName').textContent = file.name;
-    document.getElementById('codeContent').innerHTML = '<div class="loading">Загрузка кода...</div>';
-
-    try {
-        const response = await fetch(file.download_url);
-        if (!response.ok) throw new Error('Code not found');
-
-        const code = await response.text();
-        currentCodeContent = code;
-
-        // Отображаем код с нумерацией строк
-        const lines = code.split('\n');
-        const formattedCode = lines.map(line =>
-            `<span class="code-line">${escapeHtml(line)}</span>`
-        ).join('\n');
-
-        document.getElementById('codeContent').innerHTML = formattedCode;
-
-    } catch (error) {
-        console.log('Error loading code:', error);
-        document.getElementById('codeContent').textContent = 'Ошибка загрузки кода';
-    }
-}
-
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
-
-function copyCurrentCode() {
-    if (!currentCodeContent) {
-        showNotification('❌ Нет кода для копирования');
-        return;
-    }
-
-    navigator.clipboard.writeText(currentCodeContent).then(() => {
-        showNotification('✅ Код скопирован в буфер обмена!');
-    }).catch(() => {
-        showNotification('❌ Ошибка копирования');
-    });
-}
-
-function runCurrentCode() {
-    if (!currentCodeContent) {
-        showNotification('❌ Нет кода для запуска');
-        return;
-    }
-
-    // Закрываем просмотр кода и открываем компилятор
-    closeCodeViewer();
-    openOnlineCompiler();
-
-    // Вставляем код в компилятор
-    setTimeout(() => {
-        document.getElementById('codeEditor').value = currentCodeContent;
-        showNotification('✅ Код загружен в компилятор!');
-    }, 300);
-}
-
-// ===== NOTIFICATIONS =====
-function showNotification(message) {
-    const notification = document.createElement('div');
-    notification.style.cssText = `
-        position: fixed;
-        top: 100px;
-        right: 20px;
-        background: linear-gradient(135deg, #6366f1, #8b5cf6);
-        color: white;
-        padding: 1rem 1.5rem;
-        border-radius: 12px;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-        z-index: 10001;
-        animation: slideIn 0.3s ease;
-        max-width: 300px;
-    `;
-    notification.textContent = message;
-    document.body.appendChild(notification);
-
-    setTimeout(() => {
-        notification.style.animation = 'slideOut 0.3s ease';
-        setTimeout(() => notification.remove(), 300);
-    }, 3000);
-}
-
-// Add notification animations
-const notificationStyle = document.createElement('style');
-notificationStyle.textContent = `
-    @keyframes slideIn {
-        from {
-            transform: translateX(400px);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
-    
-    @keyframes slideOut {
-        from {
-            transform: translateX(0);
-            opacity: 1;
-        }
-        to {
-            transform: translateX(400px);
-            opacity: 0;
-        }
-    }
-`;
-document.head.appendChild(notificationStyle);
+// ===== EXPORT FOR DEBUGGING =====
+window.JavaCourse = {
+    Utils,
+    Navigation,
+    GitHub,
+    Modules,
+    Animations,
+    Tools,
+    Shortcuts,
+    CONFIG
+};
