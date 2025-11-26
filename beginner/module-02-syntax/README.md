@@ -551,3 +551,4 @@ public class NumberGuessing {
 ## ➡️ Следующий модуль
 
 После завершения переходите к [Module 3: ООП - Часть 1](../module-03-oop-part1/README.md)
+

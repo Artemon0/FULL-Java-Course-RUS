@@ -33,3 +33,4 @@
 ## Атрибуция
 
 Этот Кодекс поведения адаптирован из [Contributor Covenant](https://www.contributor-covenant.org), версия 2.0.
+

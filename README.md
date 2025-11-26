@@ -144,7 +144,7 @@ FULL-Java-Course-RUS/
 2. **Практичность** - каждый модуль содержит 5-10 примеров кода и практические задания
 3. **Проектность** - обучение через создание реальных приложений
 4. **Полнота** - охватывает все ключевые темы Java разработки
-5. **Современность** - актуальные технологии (Java 17+, Spring Boot 3, JavaFX)
+5. **Современность** - актуальные технологии (Java 18+, Spring Boot 3, JavaFX)
 6. **Визуальность** - красивые диаграммы, таблицы и схемы
 7. **Профессионализм** - best practices и паттерны индустрии
 
@@ -347,5 +347,7 @@ ADVANCED LEVEL
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Java Version](https://img.shields.io/badge/Java-17%2B-blue.svg)](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
 [![Website](https://img.shields.io/badge/Website-Online-green.svg)](https://artemon0.github.io/FULL-Java-Course-RUS/)
+
+
 
 

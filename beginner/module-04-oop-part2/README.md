@@ -667,3 +667,4 @@ public class CheckingAccount extends BankAccount {
 
 Поздравляем! Вы завершили все модули уровня Beginner.
 Переходите к [Финальному проекту: Текстовое приключение](../project-text-adventure/README.md)
+

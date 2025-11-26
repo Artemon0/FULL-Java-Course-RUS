@@ -416,3 +416,4 @@ public class MathOperations {
 ## ➡️ Следующий модуль
 
 После завершения всех заданий переходите к [Module 2: Синтаксис и управление потоком](../module-02-syntax/README.md)
+

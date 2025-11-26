@@ -212,3 +212,4 @@ advanced/final-project-minecraft/
 ---
 
 **Вопросы? Проверьте TEXTURES-GUIDE.md для подробностей!**
+

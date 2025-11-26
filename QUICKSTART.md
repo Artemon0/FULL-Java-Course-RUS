@@ -51,3 +51,4 @@ Beginner (2-3 мес) → Intermediate (3-4 мес) → Advanced (4-6 мес)
 ---
 
 **Готовы? Начните с [Module 1](beginner/module-01-basics/README.md)! 🚀**
+

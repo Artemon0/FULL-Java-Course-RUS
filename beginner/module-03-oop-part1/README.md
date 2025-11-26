@@ -651,3 +651,4 @@ public class Product {
 ## ➡️ Следующий модуль
 
 После завершения переходите к [Module 4: ООП - Часть 2](../module-04-oop-part2/README.md)
+
