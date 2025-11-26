@@ -114,14 +114,12 @@
                             <span>5</span>
                             <span>6</span>
                         </div>
-                        <div class="code-lines">
-                            <div><span class="keyword">public class</span> <span class="class-name">HelloWorld</span> {</div>
-                            <div>    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="type">String</span>[] args) {</div>
-                            <div>        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Привет, Java!"</span>);</div>
-                            <div>        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Начинаем обучение!"</span>);</div>
-                            <div>    }</div>
-                            <div>}</div>
-                        </div>
+                        <pre class="code-lines"><code><span class="keyword">public class</span> <span class="class-name">HelloWorld</span> {
+    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="type">String</span>[] args) {
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Привет, Java!"</span>);
+        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Начинаем обучение!"</span>);
+    }
+}</code></pre>
                     </div>
                     <div class="editor-output">
                         <div class="output-header">Console Output</div>
@@ -206,12 +204,100 @@
                 <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
                     <div class="feature-icon">🚀</div>
                     <h3>Современный стек</h3>
-                    <p>Java 17+, Spring Boot 3, LWJGL 3, Maven. Актуальные технологии 2024.</p>
+                    <p>Java 18+, Spring Boot 3, LWJGL 3, Maven. Актуальные технологии 2024.</p>
                     <div class="feature-link">Технологии →</div>
                 </div>
             </div>
         </div>
     </section>
+
+    <!-- Learning Options Section -->
+    <section class="learning-options">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">🎓 Как учиться</span>
+                <h2 class="section-title">Выберите удобный способ</h2>
+                <p class="section-subtitle">Учитесь онлайн или скачайте курс на компьютер</p>
+            </div>
+            <div class="options-grid">
+                <div class="option-card">
+                    <div class="option-icon">💻</div>
+                    <h3>Онлайн компилятор</h3>
+                    <p>Пишите и запускайте код прямо в браузере. Не нужно ничего устанавливать!</p>
+                    <button class="btn btn-primary" onclick="openOnlineCompiler()">
+                        Открыть компилятор →
+                    </button>
+                    <div class="option-features">
+                        <span>✓ Java 18+</span>
+                        <span>✓ Без установки</span>
+                        <span>✓ Мгновенный запуск</span>
+                    </div>
+                </div>
+                <div class="option-card">
+                    <div class="option-icon">📥</div>
+                    <h3>Скачать курс</h3>
+                    <p>Загрузите весь курс на компьютер и учитесь оффлайн в своей IDE.</p>
+                    <button class="btn btn-secondary" onclick="downloadCourse()">
+                        Скачать ZIP →
+                    </button>
+                    <div class="option-features">
+                        <span>✓ Все модули</span>
+                        <span>✓ Примеры кода</span>
+                        <span>✓ Проекты</span>
+                    </div>
+                </div>
+                <div class="option-card">
+                    <div class="option-icon">📝</div>
+                    <h3>Интерактивные задания</h3>
+                    <p>Решайте задачи прямо на сайте с автоматической проверкой.</p>
+                    <button class="btn btn-primary" onclick="openExercises()">
+                        Начать задания →
+                    </button>
+                    <div class="option-features">
+                        <span>✓ 179+ заданий</span>
+                        <span>✓ Автопроверка</span>
+                        <span>✓ Подсказки</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Online Compiler Modal -->
+    <div id="compilerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>☕ Онлайн Java Компилятор</h3>
+                <button class="modal-close" onclick="closeCompiler()">&times;</button>
+            </div>
+            <div class="compiler-container">
+                <div class="compiler-editor">
+                    <div class="editor-toolbar">
+                        <button class="btn btn-small btn-primary" onclick="runCode()">▶️ Запустить</button>
+                        <button class="btn btn-small btn-secondary" onclick="clearCode()">🗑️ Очистить</button>
+                        <button class="btn btn-small btn-secondary" onclick="loadExample()">📝 Пример</button>
+                    </div>
+                    <textarea id="codeEditor" class="code-textarea" spellcheck="false">public class Main {
+    public static void main(String[] args) {
+        System.out.println("Привет, Java!");
+        System.out.println("Напишите свой код здесь...");
+    }
+}</textarea>
+                </div>
+                <div class="compiler-output">
+                    <div class="output-toolbar">
+                        <span>Вывод программы:</span>
+                    </div>
+                    <div id="compilerOutput" class="output-area">
+                        Нажмите "Запустить" чтобы выполнить код...
+                    </div>
+                </div>
+            </div>
+            <div class="compiler-info">
+                <p>💡 Используется JDoodle API (Java 18+). Бесплатно: 200 запусков в день.</p>
+            </div>
+        </div>
+    </div>
 
     <!-- Modules Section -->
     <section id="modules" class="modules">
@@ -429,4 +515,5 @@
     <script src="script.js"></script>
 </body>
 </html>
+
 

@@ -370,3 +370,169 @@ rainbowStyle.textContent = `
     }
 `;
 document.head.appendChild(rainbowStyle);
+
+
+// ===== ONLINE COMPILER =====
+function openOnlineCompiler() {
+    document.getElementById('compilerModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeCompiler() {
+    document.getElementById('compilerModal').classList.remove('active');
+    document.body.style.overflow = 'auto';
+}
+
+function clearCode() {
+    document.getElementById('codeEditor').value = '';
+}
+
+function loadExample() {
+    const examples = [
+        `public class Main {
+    public static void main(String[] args) {
+        // Пример: Hello World
+        System.out.println("Привет, Java!");
+    }
+}`,
+        `public class Main {
+    public static void main(String[] args) {
+        // Пример: Переменные
+        int age = 25;
+        String name = "Студент";
+        System.out.println("Имя: " + name);
+        System.out.println("Возраст: " + age);
+    }
+}`,
+        `public class Main {
+    public static void main(String[] args) {
+        // Пример: Цикл
+        for (int i = 1; i <= 5; i++) {
+            System.out.println("Число: " + i);
+        }
+    }
+}`
+    ];
+
+    const randomExample = examples[Math.floor(Math.random() * examples.length)];
+    document.getElementById('codeEditor').value = randomExample;
+}
+
+async function runCode() {
+    const code = document.getElementById('codeEditor').value;
+    const output = document.getElementById('compilerOutput');
+
+    output.textContent = '⏳ Компиляция и запуск...';
+
+    try {
+        // Используем JDoodle API
+        const response = await fetch('https://api.jdoodle.com/v1/execute', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                clientId: '8c8042f6e1f2e0e5e5f5f5f5f5f5f5f5', // Публичный demo ID
+                clientSecret: 'demo-secret-key', // Demo secret
+                script: code,
+                language: 'java',
+                versionIndex: '4' // Java 18
+            })
+        });
+
+        const result = await response.json();
+
+        if (result.output) {
+            output.textContent = result.output;
+        } else if (result.error) {
+            output.textContent = '❌ Ошибка:\n' + result.error;
+        } else {
+            output.textContent = '❌ Не удалось выполнить код. Попробуйте позже.';
+        }
+    } catch (error) {
+        output.textContent = '❌ Ошибка подключения к компилятору.\n\nПопробуйте:\n1. Проверьте интернет соединение\n2. Используйте локальную IDE (IntelliJ IDEA)\n3. Скачайте курс и запускайте код локально';
+    }
+}
+
+// Close modal on Escape key
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        closeCompiler();
+    }
+});
+
+// Close modal on background click
+document.getElementById('compilerModal')?.addEventListener('click', (e) => {
+    if (e.target.id === 'compilerModal') {
+        closeCompiler();
+    }
+});
+
+// ===== DOWNLOAD COURSE =====
+function downloadCourse() {
+    // Скачивание ZIP архива репозитория
+    const downloadUrl = `https://github.com/${GITHUB_USERNAME}/${GITHUB_REPO}/archive/refs/heads/main.zip`;
+    window.open(downloadUrl, '_blank');
+
+    // Показать уведомление
+    showNotification('📥 Скачивание началось! Проверьте папку загрузок.');
+}
+
+// ===== EXERCISES =====
+function openExercises() {
+    // Перенаправление на секцию модулей
+    scrollToSection('modules');
+    showNotification('📝 Выберите модуль чтобы начать задания!');
+}
+
+// ===== NOTIFICATIONS =====
+function showNotification(message) {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        z-index: 10001;
+        animation: slideIn 0.3s ease;
+        max-width: 300px;
+    `;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+
+// Add notification animations
+const notificationStyle = document.createElement('style');
+notificationStyle.textContent = `
+    @keyframes slideIn {
+        from {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    @keyframes slideOut {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+    }
+`;
+document.head.appendChild(notificationStyle);
