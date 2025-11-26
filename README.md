@@ -166,6 +166,21 @@ java-course/
 - ✅ Создавать сложные приложения и игры
 - ✅ Претендовать на позицию Junior/Middle Java Developer
 
+## 🌐 Сайт курса
+
+**🎨 Красивый интерактивный сайт с автоподтяжкой данных из GitHub!**
+
+👉 **Посмотреть сайт:** [https://YOUR_USERNAME.github.io/java-course/](https://YOUR_USERNAME.github.io/java-course/)
+
+Возможности сайта:
+- ✅ Автоматическая подтяжка GitHub статистики (Stars, Forks, Issues)
+- ✅ Автоматическая загрузка модулей из репозитория
+- ✅ Интерактивные анимации и эффекты
+- ✅ Адаптивный дизайн (desktop/tablet/mobile)
+- ✅ Плавная навигация и прогресс бар
+
+**Настройка:** [QUICK-DEPLOY.md](QUICK-DEPLOY.md) - 3 простых шага!
+
 ## 🚀 Быстрый старт
 
 ### ⚡ Хотите начать прямо сейчас?
@@ -331,3 +346,4 @@ ADVANCED LEVEL
 [![Build Status](https://github.com/YOUR_USERNAME/java-course/workflows/Build%20and%20Test/badge.svg)](https://github.com/YOUR_USERNAME/java-course/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Java Version](https://img.shields.io/badge/Java-17%2B-blue.svg)](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
+[![Website](https://img.shields.io/badge/Website-Online-green.svg)](https://YOUR_USERNAME.github.io/java-course/)
