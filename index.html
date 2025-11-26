@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>☕ Курс Java - От новичка до профессионала</title>
+    <meta name="description" content="Полный курс Java: 16 модулей, 179+ заданий, финальный проект - 3D игра Minecraft">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Progress Bar -->
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <span class="logo">☕</span>
+                <span class="brand-text">Java Course</span>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#home" class="nav-link">Главная</a></li>
+                <li><a href="#features" class="nav-link">Возможности</a></li>
+                <li><a href="#modules" class="nav-link">Модули</a></li>
+                <li><a href="#minecraft" class="nav-link">Minecraft</a></li>
+                <li><a href="#stats" class="nav-link">Статистика</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="https://github.com/artemon0/FULL-Java-Course-RUS" target="_blank" class="btn btn-github">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                    </svg>
+                    GitHub
+                </a>
+                <button class="btn btn-primary" onclick="scrollToSection('modules')">Начать обучение</button>
+            </div>
+            <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-particles"></div>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span class="badge-icon">🎓</span>
+                    <span>Полный курс Java</span>
+                </div>
+                <h1 class="hero-title">
+                    От новичка до<br>
+                    <span class="gradient-text typing-text">профессионала</span>
+                </h1>
+                <p class="hero-subtitle">
+                    16 модулей • <span id="tasksCount">179+</span> заданий • Финальный проект - 3D игра Minecraft
+                </p>
+                <div class="hero-buttons">
+                    <button class="btn btn-large btn-primary" onclick="scrollToSection('modules')">
+                        <span>🚀 Начать обучение</span>
+                    </button>
+                    <button class="btn btn-large btn-secondary" onclick="window.open('https://github.com/artemon0/FULL-Java-Course-RUS')">
+                        <span>📚 Посмотреть на GitHub</span>
+                    </button>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon">📚</div>
+                        <div class="stat-number" data-target="16">0</div>
+                        <div class="stat-label">Модулей</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✏️</div>
+                        <div class="stat-number" data-target="179">0</div>
+                        <div class="stat-label">Заданий</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🎨</div>
+                        <div class="stat-number" data-target="40">0</div>
+                        <div class="stat-label">Проектов</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⏱️</div>
+                        <div class="stat-number" data-target="9">0</div>
+                        <div class="stat-label">Месяцев</div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="code-editor">
+                    <div class="editor-header">
+                        <div class="editor-buttons">
+                            <span class="btn-red"></span>
+                            <span class="btn-yellow"></span>
+                            <span class="btn-green"></span>
+                        </div>
+                        <div class="editor-title">HelloWorld.java</div>
+                        <div class="editor-actions">
+                            <span class="action-icon">▶️</span>
+                        </div>
+                    </div>
+                    <div class="editor-content">
+                        <div class="line-numbers">
+                            <span>1</span>
+                            <span>2</span>
+                            <span>3</span>
+                            <span>4</span>
+                            <span>5</span>
+                            <span>6</span>
+                        </div>
+                        <div class="code-lines">
+                            <div><span class="keyword">public class</span> <span class="class-name">HelloWorld</span> {</div>
+                            <div>    <span class="keyword">public static void</span> <span class="method">main</span>(<span class="type">String</span>[] args) {</div>
+                            <div>        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Привет, Java!"</span>);</div>
+                            <div>        <span class="type">System</span>.out.<span class="method">println</span>(<span class="string">"Начинаем обучение!"</span>);</div>
+                            <div>    }</div>
+                            <div>}</div>
+                        </div>
+                    </div>
+                    <div class="editor-output">
+                        <div class="output-header">Console Output</div>
+                        <div class="output-content">
+                            <div class="output-line">Привет, Java!</div>
+                            <div class="output-line">Начинаем обучение!</div>
+                            <div class="output-cursor">_</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- GitHub Stats Section -->
+    <section id="stats" class="github-stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-icon-large">⭐</div>
+                    <div class="stat-value" id="githubStars">-</div>
+                    <div class="stat-text">GitHub Stars</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon-large">🔄</div>
+                    <div class="stat-value" id="githubForks">-</div>
+                    <div class="stat-text">Forks</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon-large">👁️</div>
+                    <div class="stat-value" id="githubWatchers">-</div>
+                    <div class="stat-text">Watchers</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon-large">📝</div>
+                    <div class="stat-value" id="githubIssues">-</div>
+                    <div class="stat-text">Open Issues</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">✨ Возможности</span>
+                <h2 class="section-title">Почему этот курс?</h2>
+                <p class="section-subtitle">Всё что нужно для изучения Java в одном месте</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card" data-aos="fade-up">
+                    <div class="feature-icon">📚</div>
+                    <h3>Структурированный подход</h3>
+                    <p>Чёткая последовательность от простого к сложному. Beginner → Intermediate → Advanced.</p>
+                    <div class="feature-link">Узнать больше →</div>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon">💻</div>
+                    <h3>Практика, практика, практика</h3>
+                    <p>179+ заданий и 40+ проектов. Учитесь на реальных примерах, а не только теории.</p>
+                    <div class="feature-link">Посмотреть задания →</div>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-icon">🎮</div>
+                    <h3>Финальный проект - Minecraft</h3>
+                    <p>Создайте 3D игру с OpenGL. Применение всех знаний на практике.</p>
+                    <div class="feature-link">Смотреть проект →</div>
+                </div>
+                <div class="feature-card" data-aos="fade-up">
+                    <div class="feature-icon">🆓</div>
+                    <h3>Полностью бесплатно</h3>
+                    <p>Open Source курс с MIT лицензией. Доступен всем и навсегда.</p>
+                    <div class="feature-link">Лицензия →</div>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon">🇷🇺</div>
+                    <h3>На русском языке</h3>
+                    <p>Вся документация, примеры и комментарии на русском языке.</p>
+                    <div class="feature-link">Начать →</div>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-icon">🚀</div>
+                    <h3>Современный стек</h3>
+                    <p>Java 17+, Spring Boot 3, LWJGL 3, Maven. Актуальные технологии 2024.</p>
+                    <div class="feature-link">Технологии →</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modules Section -->
+    <section id="modules" class="modules">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">📚 Программа</span>
+                <h2 class="section-title">Программа обучения</h2>
+                <p class="section-subtitle">Три уровня сложности для постепенного роста</p>
+            </div>
+            
+            <div class="level-tabs">
+                <button class="tab-btn active" data-level="beginner">
+                    <span class="tab-icon">🌱</span>
+                    <span>Beginner</span>
+                </button>
+                <button class="tab-btn" data-level="intermediate">
+                    <span class="tab-icon">🚀</span>
+                    <span>Intermediate</span>
+                </button>
+                <button class="tab-btn" data-level="advanced">
+                    <span class="tab-icon">⚡</span>
+                    <span>Advanced</span>
+                </button>
+            </div>
+
+            <div class="modules-content">
+                <!-- Beginner -->
+                <div class="level-panel active" id="beginner">
+                    <div class="level-header">
+                        <div class="level-badge">Уровень 1</div>
+                        <h3>Beginner Level</h3>
+                        <p class="level-duration">⏱️ 2-3 месяца</p>
+                        <p class="level-description">
+                            Изучите основы Java и объектно-ориентированного программирования. 
+                            Создайте свою первую текстовую RPG игру.
+                        </p>
+                    </div>
+                    <div class="modules-list" id="beginnerModules">
+                        <!-- Будет заполнено из GitHub -->
+                        <div class="loading">Загрузка модулей...</div>
+                    </div>
+                </div>
+
+                <!-- Intermediate -->
+                <div class="level-panel" id="intermediate">
+                    <div class="level-header">
+                        <div class="level-badge">Уровень 2</div>
+                        <h3>Intermediate Level</h3>
+                        <p class="level-duration">⏱️ 3-4 месяца</p>
+                        <p class="level-description">
+                            Углубитесь в коллекции, Stream API, многопоточность и работу с сетью.
+                        </p>
+                    </div>
+                    <div class="modules-list" id="intermediateModules">
+                        <div class="loading">Загрузка модулей...</div>
+                    </div>
+                </div>
+
+                <!-- Advanced -->
+                <div class="level-panel" id="advanced">
+                    <div class="level-header">
+                        <div class="level-badge">Уровень 3</div>
+                        <h3>Advanced Level</h3>
+                        <p class="level-duration">⏱️ 4-6 месяцев</p>
+                        <p class="level-description">
+                            Освойте Spring Framework, паттерны проектирования и создайте 3D игру Minecraft.
+                        </p>
+                    </div>
+                    <div class="modules-list" id="advancedModules">
+                        <div class="loading">Загрузка модулей...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Minecraft Section -->
+    <section id="minecraft" class="minecraft">
+        <div class="container">
+            <div class="minecraft-grid">
+                <div class="minecraft-info">
+                    <span class="section-badge">🎮 Финальный проект</span>
+                    <h2>Создайте свой Minecraft</h2>
+                    <p class="minecraft-description">
+                        Финальный проект курса - создание 3D игры в стиле Minecraft с использованием 
+                        OpenGL и LWJGL. Применение всех полученных знаний на практике.
+                    </p>
+                    <div class="minecraft-features">
+                        <div class="feature-item">
+                            <span class="check-icon">✓</span>
+                            <span>3D рендеринг с OpenGL 3.3</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="check-icon">✓</span>
+                            <span>Управление от первого лица</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="check-icon">✓</span>
+                            <span>Физика и гравитация</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="check-icon">✓</span>
+                            <span>Система текстур</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="check-icon">✓</span>
+                            <span>Генерация мира</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="check-icon">✓</span>
+                            <span>Шейдеры GLSL</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-large btn-white" onclick="window.open('https://github.com/artemon0/FULL-Java-Course-RUS/tree/main/advanced/final-project-minecraft')">
+                        Узнать больше о проекте →
+                    </button>
+                </div>
+                <div class="minecraft-preview">
+                    <div class="preview-window">
+                        <div class="preview-header">
+                            <span>Minecraft Clone - 3D Voxel Game</span>
+                        </div>
+                        <div class="preview-scene">
+                            <div class="minecraft-world">
+                                <div class="cube" style="--i:0"></div>
+                                <div class="cube" style="--i:1"></div>
+                                <div class="cube" style="--i:2"></div>
+                                <div class="cube" style="--i:3"></div>
+                            </div>
+                        </div>
+                        <div class="preview-stats">
+                            <span>FPS: 60</span>
+                            <span>Чанков: 81</span>
+                            <span>OpenGL 3.3</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Готовы начать своё путешествие?</h2>
+                <p>Присоединяйтесь к тысячам студентов, изучающих Java</p>
+                <div class="cta-buttons">
+                    <button class="btn btn-large btn-white" onclick="scrollToSection('modules')">
+                        🚀 Начать обучение бесплатно
+                    </button>
+                    <button class="btn btn-large btn-outline" onclick="window.open('https://github.com/artemon0/FULL-Java-Course-RUS')">
+                        📚 Посмотреть на GitHub
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>☕ Java Course</h4>
+                    <p>Полный курс Java от новичка до профессионала</p>
+                    <div class="social-links">
+                        <a href="https://github.com/artemon0/FULL-Java-Course-RUS" class="social-link">GitHub</a>
+                        <a href="#" class="social-link">Twitter</a>
+                        <a href="#" class="social-link">Discord</a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Курс</h4>
+                    <ul>
+                        <li><a href="#beginner">Beginner</a></li>
+                        <li><a href="#intermediate">Intermediate</a></li>
+                        <li><a href="#advanced">Advanced</a></li>
+                        <li><a href="#minecraft">Minecraft</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Ресурсы</h4>
+                    <ul>
+                        <li><a href="#">Документация</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Roadmap</a></li>
+                        <li><a href="#">Примеры</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Сообщество</h4>
+                    <ul>
+                        <li><a href="#">GitHub Discussions</a></li>
+                        <li><a href="#">Сообщить об ошибке</a></li>
+                        <li><a href="#">Внести вклад</a></li>
+                        <li><a href="#">Лицензия MIT</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2024 Java Course. Создано с ❤️ для изучающих Java</p>
+                <p>MIT License • Open Source • <span id="lastUpdate">Обновлено: загрузка...</span></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 15l-6-6-6 6"/>
+        </svg>
+    </button>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
