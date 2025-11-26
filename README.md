@@ -81,7 +81,7 @@ ADVANCED LEVEL (4-6 месяцев)
 ## 📂 Структура репозитория
 
 ```
-java-course/
+FULL-Java-Course-RUS/
 ├── 📖 README.md                          ← Вы здесь
 ├── 🚀 GETTING-STARTED.md                 ← Быстрый старт
 ├── 🗺️ ROADMAP.md                         ← Детальная дорожная карта
@@ -170,7 +170,7 @@ java-course/
 
 **🎨 Красивый интерактивный сайт с автоподтяжкой данных из GitHub!**
 
-👉 **Посмотреть сайт:** [https://YOUR_USERNAME.github.io/java-course/](https://YOUR_USERNAME.github.io/java-course/)
+👉 **Посмотреть сайт:** [https://artemon0.github.io/FULL-Java-Course-RUS/](https://artemon0.github.io/FULL-Java-Course-RUS/)
 
 Возможности сайта:
 - ✅ Автоматическая подтяжка GitHub статистики (Stars, Forks, Issues)
@@ -343,7 +343,9 @@ ADVANCED LEVEL
 **Последнее обновление:** 2024  
 **Статус:** ✅ Завершён и готов к использованию
 
-[![Build Status](https://github.com/YOUR_USERNAME/java-course/workflows/Build%20and%20Test/badge.svg)](https://github.com/YOUR_USERNAME/java-course/actions)
+[![Build Status](https://github.com/artemon0/FULL-Java-Course-RUS/workflows/Build%20and%20Test/badge.svg)](https://github.com/artemon0/FULL-Java-Course-RUS/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Java Version](https://img.shields.io/badge/Java-17%2B-blue.svg)](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
-[![Website](https://img.shields.io/badge/Website-Online-green.svg)](https://YOUR_USERNAME.github.io/java-course/)
+[![Website](https://img.shields.io/badge/Website-Online-green.svg)](https://artemon0.github.io/FULL-Java-Course-RUS/)
+
+

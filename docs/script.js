@@ -1,6 +1,6 @@
 // ===== CONFIGURATION =====
-const GITHUB_USERNAME = 'Artemon0'; // Замените на ваш username
-const GITHUB_REPO = 'FULL-Java-Course-RUS'; // Замените на название репозитория
+const GITHUB_USERNAME = 'artemon0';
+const GITHUB_REPO = 'FULL-Java-Course-RUS';
 const GITHUB_API = `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}`;
 
 // ===== SMOOTH SCROLLING =====
